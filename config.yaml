@@ -1,0 +1,63 @@
+cleaning:
+  input_path: "datasets/raw/heart_disease_uci.csv"
+  output_path: "datasets/cleaned/heart_disease_uci.csv"
+  functions:
+    - name: drop_blank_rows
+      params: {}
+    - name: convert_values_to_null
+      params:
+        old_col_name: chol
+        new_col_name: chol
+        values:
+          - 0
+    - name: convert_values_to_null
+      params:
+        old_col_name: trestbps
+        new_col_name: trestbps
+        values:
+          - 0
+preprocessing:
+  input_path: "datasets/cleaned/heart_disease_uci.csv"
+  output_path: "datasets/preprocessed/heart_disease_uci.csv"
+  functions:
+    - name: logistic_regression_baseline
+      params:
+        config: &variable_params
+          continuous_variables:
+            - age
+            - trestbps
+            - chol
+            - thalch
+            - oldpeak
+          cols_to_label_encode:
+            sex:
+              Male: 0
+              Female: 1
+            fbs:
+              true: 1
+              false: 0
+            exang:
+              true: 1
+              false: 0
+          cols_to_one_hot_encode:
+            # - dataset
+            - cp
+            - restecg
+            - slope
+            - thal
+          target: num
+modelling:
+  input_path: "datasets/preprocessed/heart_disease_uci.csv"
+  mode: train
+  test_size: 0.2
+  n_splits: 5
+  random_state: &random_state 42
+  variable_config: *variable_params
+  functions:
+    - name: logistic_regression
+      params: 
+        random_state: *random_state
+        max_iter: 1000
+outputs:
+  report_path: "outputs/reports/"
+  config_dump_path: "outputs/configs/"
