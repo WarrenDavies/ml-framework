@@ -1,0 +1,1 @@
+A lightweight framework for building, evaluating, and visualising classification models (logistic regression, metrics, and interpretability tools).
