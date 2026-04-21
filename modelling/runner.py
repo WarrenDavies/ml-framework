@@ -43,6 +43,7 @@ class Runner():
                 self.run_ts,
                 x_values,
                 y_values,
+                self.X_train.columns,
                 **function["params"]
             )
             self.results.append(results)

@@ -6,7 +6,7 @@ from modelling.registry import register
 
 
 @register
-def dummy_classifier(run_ts, x_values, y_values, strategy="most_frequent", seed=42):
+def dummy_classifier(run_ts, x_values, y_values, x_cols, strategy="most_frequent", seed=42):
 
     model = DummyClassifier(strategy=strategy, random_state=seed)
     scoring = {

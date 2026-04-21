@@ -55,6 +55,7 @@ def create_outputs(config, results):
                     file.write(f"  * **{param}**: {param_value}\n")
         file.write(f"\n\n")
 
+
         file.write(f"## Preprocessing functions \n\n")
         for preprocessing_function in config["preprocessing"]["functions"]:
             file.write(f"* {preprocessing_function["name"]}\n")
@@ -64,6 +65,7 @@ def create_outputs(config, results):
                     file.write(f"  * **{param}**: {param_value}\n")
         file.write(f"\n\n")
 
+
         for i, result in enumerate(results):
             file.write(f"## {config["modelling"]["functions"][i]["name"]} \n\n")
             print(result)
@@ -72,6 +74,14 @@ def create_outputs(config, results):
                 df_report = pd.DataFrame(result["classification_report"]).transpose()
                 md_table = df_report.to_markdown()
                 file.write(md_table)
+                file.write("* **Precision:** Of the cases predicted as a given class (0 or 1), the fraction that are actually that class (fewer false positives).\n")
+                file.write("* **Recall:** Of the cases that truly belong to a given class (0 or 1), the fraction the model correctly identifies (fewer false negatives).\n")
+                file.write("* **F1-score:** The harmonic mean of precision and recall for a class, balancing false positives and false negatives.\n")
+                file.write("* **Support:** The number of true samples for each class in the evaluation set.\n")
+                file.write("* **Accuracy:** The overall fraction of predictions (across both classes) that are correct.\n")
+                file.write("* **Macro avg:** The unweighted average of the per-class scores, treating classes 0 and 1 equally regardless of size.\n")
+                file.write("* **Weighted avg:** The average of the per-class scores weighted by support, so larger classes contribute more.\n")
+
                 file.write(f"\n\n")
 
 
@@ -83,6 +93,12 @@ def create_outputs(config, results):
                     std = result["positive_class_results"][positive_class_result]["std"]
                     file.write(f"* **{metric}**: {mean} ± {std}\n")
                 file.write(f"\n\n")
+
+
+            if "feature_importance" in result:
+                file.write(f"### Feature importance \n\n")
+                file.write(result["feature_importance"].to_markdown(index=False))
+                file.write('\n\n')
 
 
             if "chart_paths" in result:

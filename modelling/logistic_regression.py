@@ -1,4 +1,5 @@
 import datetime
+import math
 
 import numpy as np
 import pandas as pd
@@ -14,7 +15,7 @@ from modelling.registry import register
 
 
 @register
-def logistic_regression(run_ts, x_values, y_values, random_state=42, max_iter=1000, splits=5):
+def logistic_regression(run_ts, x_values, y_values, x_cols, random_state=42, max_iter=1000, splits=5):
 
     model = LogisticRegression(random_state=random_state, max_iter=max_iter)
     model.fit(x_values, y_values)
@@ -52,7 +53,25 @@ def logistic_regression(run_ts, x_values, y_values, random_state=42, max_iter=10
     print(classification_report(y_values, y_pred))
     report = classification_report(y_values, y_pred, output_dict=True)
 
-    # print(model.coef_)
+
+    ## Feature Importance
+
+    odds_change = [round(math.e ** coef, 3) for coef in model.coef_[0]]
+    coefs = [round(coef, 3) for coef in model.coef_[0]]
+    df_feature_importance = (
+        pd.DataFrame({
+            'Feature': x_cols,
+            'Coefficient': coefs,
+            'Odds_change': odds_change
+        })
+        .sort_values(by='Coefficient', key=lambda x: x.abs(),  ascending=False)
+        # .sort_values(by='Coefficient', ascending=False)
+        .reset_index()
+        .drop("index", axis=1)
+    )
+    print("\nFeature Importance:\n", df_feature_importance)
+
+    
     ### charts
     chart_paths = []
 
@@ -75,7 +94,6 @@ def logistic_regression(run_ts, x_values, y_values, random_state=42, max_iter=10
     plt.close()
 
 
-    # Confusion Matrix
     # Confusion Matrix
     fig, ax = plt.subplots()
 
@@ -130,7 +148,8 @@ def logistic_regression(run_ts, x_values, y_values, random_state=42, max_iter=10
     return {
         "positive_class_results": positive_class_results,
         "classification_report": report,
-        "chart_paths": chart_paths
+        "chart_paths": chart_paths,
+        "feature_importance": df_feature_importance,
     } 
 
     # print("Accuracy:", accuracy_score(y_test, y_pred))
