@@ -30,11 +30,11 @@ def logistic_regression_baseline(df, config):
     for col in config["continuous_variables"]:
         df[col] = df[col].fillna(df[col].mean())
 
-    # fill missing categorical values with column mean
+    # fill missing categorical values with column mode
     for col in categorical_variables:
         df[col] = df[col].fillna(df[col].mode())
 
-    # fill binary coded cols with column mean
+    # fill binary coded cols with column mode
     for col in list(config["cols_to_label_encode"].keys()):
         df[col] = df[col].fillna(df[col].mode()[0]).astype(int)
 
