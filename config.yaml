@@ -4,12 +4,12 @@ cleaning:
   functions:
     - name: drop_blank_rows
       params: {}
-    # - name: convert_values_to_null
-    #   params:
-    #     old_col_name: chol
-    #     new_col_name: chol
-    #     values:
-    #       - 0
+    - name: convert_values_to_null
+      params:
+        old_col_name: chol
+        new_col_name: chol
+        values:
+          - 0
     - name: convert_values_to_null
       params:
         old_col_name: trestbps
@@ -41,7 +41,6 @@ preprocessing:
               true: 1
               false: 0
           cols_to_one_hot_encode:
-
             - cp
             - restecg
             - slope
