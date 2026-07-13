@@ -10,6 +10,7 @@ class Runner():
 
 
     def run(self):
+        print(self.config)
         df_output = self.df_input.copy()
 
         for function in self.config["functions"]:

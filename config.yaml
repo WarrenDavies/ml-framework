@@ -4,12 +4,12 @@ cleaning:
   functions:
     - name: drop_blank_rows
       params: {}
-    - name: convert_values_to_null
-      params:
-        old_col_name: chol
-        new_col_name: chol
-        values:
-          - 0
+    # - name: convert_values_to_null
+    #   params:
+    #     old_col_name: chol
+    #     new_col_name: chol
+    #     values:
+    #       - 0
     - name: convert_values_to_null
       params:
         old_col_name: trestbps
@@ -29,6 +29,7 @@ preprocessing:
             - chol
             - thalch
             - oldpeak
+            - ca
           cols_to_label_encode:
             sex:
               Male: 0
@@ -40,7 +41,7 @@ preprocessing:
               true: 1
               false: 0
           cols_to_one_hot_encode:
-            # - dataset
+
             - cp
             - restecg
             - slope
@@ -57,7 +58,7 @@ modelling:
     - name: logistic_regression
       params: 
         random_state: *random_state
-        max_iter: 1000
+        max_iter: 2000
 outputs:
   report_path: "outputs/reports/"
   config_dump_path: "outputs/configs/"

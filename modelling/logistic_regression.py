@@ -16,7 +16,6 @@ from modelling.registry import register
 
 @register
 def logistic_regression(run_ts, x_values, y_values, x_cols, random_state=42, max_iter=1000, splits=5):
-
     model = LogisticRegression(random_state=random_state, max_iter=max_iter)
     model.fit(x_values, y_values)
 
@@ -64,8 +63,8 @@ def logistic_regression(run_ts, x_values, y_values, x_cols, random_state=42, max
             'Coefficient': coefs,
             'Odds_change': odds_change
         })
-        .sort_values(by='Coefficient', key=lambda x: x.abs(),  ascending=False)
-        # .sort_values(by='Coefficient', ascending=False)
+        # .sort_values(by='Coefficient', key=lambda x: x.abs(),  ascending=False)
+        .sort_values(by='Coefficient', ascending=False)
         .reset_index()
         .drop("index", axis=1)
     )
@@ -96,35 +95,15 @@ def logistic_regression(run_ts, x_values, y_values, x_cols, random_state=42, max
 
     # Confusion Matrix
     fig, ax = plt.subplots()
-
     y_pred = model.predict(x_values)
     cm = confusion_matrix(y_values, y_pred)
-
     disp = ConfusionMatrixDisplay(confusion_matrix=cm)
     disp.plot(ax=ax)
-
     ax.set_title("Confusion Matrix")
-
     chart_path = f"outputs/charts/confusion_matrix_{run_ts}.png"
     chart_paths.append(chart_path)
-
     plt.savefig(chart_path)
     plt.close(fig)
-
-    fig, ax = plt.subplots()
-
-    disp = ConfusionMatrixDisplay.from_predictions(
-        y_values, y_pred, normalize="true", ax=ax
-    )
-
-    ax.set_title("Normalised Confusion Matrix")
-
-    chart_path = f"outputs/charts/confusion_matrix_normalised_{run_ts}.png"
-    chart_paths.append(chart_path)
-
-    plt.savefig(chart_path)
-    plt.close(fig)
-
 
 
     continuous_variables = ['age', 'trestbps', 'chol', 'thalch', 'oldpeak']
@@ -151,13 +130,3 @@ def logistic_regression(run_ts, x_values, y_values, x_cols, random_state=42, max
         "chart_paths": chart_paths,
         "feature_importance": df_feature_importance,
     } 
-
-    # print("Accuracy:", accuracy_score(y_test, y_pred))
-    # print("\nClassification Report:\n", classification_report(y_test, y_pred))
-    # print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
-
-    # feature_importance = pd.DataFrame({
-    #     'Feature': [f'Feature_{i}' for i in range(X.shape[1])],
-    #     'Coefficient': model.coef_[0]
-    # }).sort_values(by='Coefficient', ascending=False)
-    # print("\nFeature Importance:\n", feature_importance)
